@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Control Panel</title>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+<fieldset>
+  	<div class="button-container">
+			<fieldset class="button-group" id="top-btn-group" style="width: 28em;">
+        <div class="legend"><span>Control Panel</span>
+          </div>
+				<label class="checkboxControl3">
+					<input id="P_1" type="checkbox" data-top-id="1"  />
+					<div></div>
+					<span class="indicator"></span>
+					<span class="label">Button 1</span>
+				</label>
+				<label class="checkboxControl3">
+					<input id="P_2" type="checkbox" data-top-id="2" />
+					<div></div>
+					<span class="indicator"></span>
+					<span class="label">Button 2</span>
+				</label>
+				<label class="checkboxControl4">
+					<input id="P_3" type="checkbox"  data-id="power" />
+					<div></div>
+					<span class="label">Button 3</span>
+					<span class="indicator" id="last"></span>
+					<span class="label2">Power</span>
+				</label>
+				<label class="checkboxControl4">
+					<input id="P_3" type="checkbox" data-id="control" />
+					<div></div>
+					<span class="label">Button 4</span>
+					<span class="label3">Control Lamp</span>
+				</label>
+			</fieldset>
+       <fieldset>
+	<div class="middleGroup">
+		<div class='checkboxGroup'>
+		<span>Button 5</span>
+				<label class='checkboxControl'>
+					<span class="tip">PRESS HERE</span>
+					<input type='checkbox' data-middle-id="4" />
+					<div>ΟΙ</div><b></b>
+					<span class='indicator'></span>
+				</label>
+			<span>Button 6</span>
+				<label class='checkboxControl'>
+					<span class="tip">PRESS HERE</span>
+					<input type='checkbox' data-middle-id="5"  />
+					<div>ΟΙ</div><b></b>
+					<span class='indicator'></span>
+				</label>
+			<span>Button 7</span>
+				<label class='checkboxControl'>
+					<span class="tip">PRESS HERE</span>
+					<input type='checkbox' data-middle-id="6" />
+					<div>ΟΙ</div><b></b>
+					<span class='indicator'></span>
+				</label>
+			<span>Button 8</span>
+				<label class='checkboxControl'>
+					<span class="tip">PRESS HERE</span>
+					<input type='checkbox' data-middle-id="7" />
+					<div>ΟΙ</div><b></b>
+					<span class='indicator'></span>
+				</label>
+      <span>Button 9</span>
+				<label class='checkboxControl'>
+					<span class="tip">PRESS HERE</span>
+					<input type='checkbox' data-middle-id="empty" />
+					<div>ΟΙ</div><b></b>
+					<span class='indicator'></span>
+				</label>
+			</div>
+			<label class='checkboxControl2'>
+				<span class="tip">PRESS HERE</span>
+				<input type='checkbox' data-middle-id="8" />
+				<div></div>
+				<span class='indicator'></span>
+			<span>Button 10</span>
+			</label>
+			<div style="margin-top: 20px;">
+
+
+			<label class='checkboxControl2'>
+				<span class="tip">PRESS HERE</span>
+				<input type='checkbox' data-middle-id="9"  />
+				<div></div>
+				<span class='indicator'></span>
+				<span>Button 11</span>
+			</label>
+
+			
+				<label class='checkboxControl2'>
+					<span class="tip">PRESS HERE</span>
+					<input type='checkbox' data-middle-id="10" />
+					<div></div>
+				<span>Button 12</span>
+				</label>
+				  <label class='checkboxControl2'>
+					<span class="tip">PRESS HERE</span>
+					<input type='checkbox' data-middle-id="11" />
+					<div></div>
+					<span class='indicator'></span>
+				  <span>Button 13</span>
+				</label>
+			</div>
+	</div>
+    <form style="margin-top: 50px;">
+      <span>Start</span>
+	<label class="toggle">
+		<input class="toggle__lever" type="checkbox" name="toggle" role="switch" value="On" id="start">
+	</label>
+       <form>
+      <span>Stop</span>
+	<label class="toggle">
+		<input class="toggle__lever" type="checkbox" name="toggle" role="switch" value="On" id="stop">
+	</label>
+</form>
+</fieldset>
+<script>
+	const state = {
+		start: false,
+		stop: true,
+		power: false,
+		control: false,
+		topProgress: [],
+		middleProgress: [],
+		middleErrors: [],
+		correctResult: ['4', '5', '6', '7', 'empty', '9', '10', '11', '8']
+	}
+
+	const start = document.getElementById('start');
+	const stop = document.getElementById('stop');
+	const middleGroup = document.querySelector('.middleGroup');
+	const middleBtns = document.querySelectorAll('[data-middle-id]');
+	const power = document.querySelector('[data-id="power"]');
+	const topBtns = document.querySelectorAll('[data-top-id]')
+	const topGroup = document.getElementById('top-btn-group');
+	const lastIndicator = document.getElementById('last');
+	const control = document.querySelector('[data-id="control"]');
+	
+	stop.checked = state.stop;
+
+	blockUnblockButtons(state.power, topBtns); // init
+	blockUnblockButtons(state.start, middleBtns);
+
+
+	function toggleButton(e) {
+		const target = e.target;
+		const id = target.getAttribute('data-top-id');
+		const index = state.topProgress.indexOf(id);
+		
+		if (id && index == -1 && target.checked) {
+			state.topProgress.push(id);
+			console.log(state.topProgress);
+		} else if (id && index != -1 && !target.checked) {
+			state.topProgress.splice(index, 1);
+			console.log(state.topProgress);
+		}	
+
+		if (state.topProgress.length == 2) {
+			if (!lastIndicator.classList.contains('power-on')) {
+				lastIndicator.classList.add('power-on');
+			}
+		} else {
+			if (lastIndicator.classList.contains('power-on')) {
+				lastIndicator.classList.remove('power-on');
+			}
+		}
+		
+	};
+
+
+	topGroup.addEventListener('click', toggleButton);
+
+
+	function blockUnblockButtons(state, buttons) {
+		if (state) {
+			buttons.forEach(btn => {
+				if (btn.getAttribute('disabled')) {
+					btn.removeAttribute('disabled');
+				}
+			});
+			console.log('buttons unlocked');
+		} else {
+			buttons.forEach(btn => {
+				if (btn.checked) {
+					btn.click();
+				}
+				if (!btn.getAttribute('disabled')) {
+					btn.setAttribute('disabled', true);
+				}
+			});
+			console.log('buttons blocked');
+		}
+	}
+
+
+	power.addEventListener('click', (e) => {
+		state.power = power.checked;
+
+		if (!power.checked) {
+			state.topProgress = [];
+			console.log(state.topProgress);
+		}
+		
+		blockUnblockButtons(state.power, topBtns);
+		
+	});
+
+
+	middleGroup.addEventListener('click', handleMiddleTogglers);
+
+	function handleMiddleTogglers(e) {
+		const target = e.target;
+		const id = target.getAttribute('data-middle-id');
+		const step = state.middleProgress.length;
+		// console.log(id);
+		// console.log(step);
+		if (id) {
+			// console.log(target);
+			if (target.checked) {
+				if (id != state.correctResult[step]) {
+					state.middleErrors.push(id);
+					hideAllTip();
+					showTip(target);
+				} else {
+					if (state.middleErrors.length) {
+						state.middleErrors.push(id);
+						hideAllTip();
+						showTip(document.querySelector(`[data-middle-id="${state.middleErrors[state.middleErrors.length - 1]}"]`)); //показываем оставшуюся ошибку
+					} else {
+						state.middleProgress.push(id);
+						hideAllTip();
+						showTip(document.querySelector(`[data-middle-id="${state.correctResult[step + 1]}"]`));
+
+					}
+				}
+			} else {
+				const errorIndex = state.middleErrors.indexOf(id);
+				if (errorIndex != -1) {
+					state.middleErrors.splice(errorIndex, 1);
+					hideAllTip();
+					//здесь нужно показать другую ошибку, если она есть
+					if (state.middleErrors.length) {
+						showTip(document.querySelector(`[data-middle-id="${state.middleErrors[state.middleErrors.length - 1]}"]`)); //показываем оставшуюся ошибку
+					} else {
+						//если ошибок больше нет, нужно показать следующий шаг
+						showTip(document.querySelector(`[data-middle-id="${state.correctResult[step]}"]`));
+						// console.log(state.middleProgress);
+						// console.log(`Текущий шаг, нужно показать куда идти дальше: ${step}`);
+					}
+					
+				} else {
+					
+					const correctIndex = state.middleProgress.indexOf(id);
+					// console.log(correctIndex);
+					if (correctIndex != -1) {
+						console.log('Вы отключили правильную кнопку');
+						hideAllTip();
+						state.middleProgress = state.middleProgress.slice(0, correctIndex);
+						state.middleErrors = [];
+						offMiddleButtons();
+						//активируем только активные кнопки
+						onMiddleButtons();
+						showTip(document.querySelector(`[data-middle-id="${state.correctResult[state.middleProgress.length]}"]`));
+					}
+				}
+			}
+			
+			if(state.middleProgress.length == 9 && JSON.stringify(state.middleProgress == JSON.stringify(state.correctResult))) {
+				if (!state.power) {
+					state.power = true;
+						power.click();
+						if (!state.topProgress.includes('1')) state.topProgress.push('1');
+						if (!state.topProgress.includes('2')) state.topProgress.push('2');
+						topBtns.forEach(btn => {
+							if (!btn.checked) {
+								btn.click();
+							}
+						});
+				}
+			}
+		}
+		
+
+	}
+
+	control.addEventListener('click', (e) => {
+		state.control = control.checked;
+
+		state.power = control.checked;
+
+		if (control.checked) {
+			power.click();
+			if (!state.topProgress.includes('1')) state.topProgress.push('1');
+			if (!state.topProgress.includes('2')) state.topProgress.push('2');
+			topBtns.forEach(btn => {
+				if (!btn.checked) {
+					btn.click();
+				}
+			});
+
+			// state.middleErrors = [];
+			// state.middleProgress = [];
+			// state.correctResult.forEach(res => state.middleProgress.push(res));
+			// onMiddleButtons();
+
+			// if (!state.start) {
+			// 	start.click();
+			// 	state.start = true;
+			// }
+		} else {
+			power.click();
+			state.topProgress = [];
+			// state.middleErrors = [];
+			// state.middleProgress = [];
+			// offMiddleButtons();
+
+			// if (state.start) {
+			// 	start.click();
+			// 	state.start = false;
+			// }
+		}
+	
+		
+	});
+
+	function showTip(target) {
+		if (target) {
+			const parent = target.closest('label');
+			const tip = parent.querySelector('.tip');
+			if (!tip.classList.contains('active')) {
+				tip.classList.add('active');
+			}
+		}
+	
+	}
+
+	function hideTip(target) {
+		const parent = target.closest('label');
+		const tip = parent.querySelector('.tip');
+		if (tip.classList.contains('active')) {
+			console.log('hide tip');
+			tip.classList.remove('active');
+		}
+	}
+
+	function hideAllTip() {
+		const tips = document.querySelectorAll('.tip');
+		tips.forEach(tip => {
+			if (tip.classList.contains('active')) {
+				tip.classList.remove('active');
+			}
+		})
+	}
+
+	function offMiddleButtons() {
+		middleBtns.forEach(btn => {
+			const id = btn.getAttribute('data-middle-id');
+			if (id && btn.checked) {
+				btn.checked = false;
+			}
+		});
+	}
+
+	function onMiddleButtons() {
+		state.middleProgress.forEach(id => {
+			document.querySelector(`[data-middle-id="${id}"]`).checked = true;
+		})
+	}
+
+	start.addEventListener('click', (e) => {
+		state.start = start.checked;
+		state.stop = !start.checked;
+		stop.checked = state.stop;
+		blockUnblockButtons(state.start, middleBtns);
+		if (state.start) {
+			showTip(document.querySelector(`[data-middle-id="${state.correctResult[0]}"]`));
+		} else {
+			hideAllTip();
+		}
+	});
+
+	stop.addEventListener('click', (e) => {
+		state.stop = stop.checked;
+		state.start = !stop.checked;
+		start.checked = state.start;
+		blockUnblockButtons(state.start, middleBtns);
+		if (state.stop) {
+			hideAllTip();
+		} else {
+			showTip(document.querySelector(`[data-middle-id="${state.correctResult[0]}"]`));
+		}
+	});
+</script>
+</html>
